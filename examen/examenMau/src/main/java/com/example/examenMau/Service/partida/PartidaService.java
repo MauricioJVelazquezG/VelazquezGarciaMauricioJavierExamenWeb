@@ -29,7 +29,7 @@ public class PartidaService {
     }
 
     public BeanPartida iniciarPartida(Long jugadorId, double apuesta) {
-        BeanJugador jugador = jugadorRepository.findById(jugadorId).orElseThrow(() -> new RuntimeException("Jugador no encontrado con id: " + jugadorId));
+        BeanJugador jugador = jugadorRepository.findById(jugadorId).get();
 
         if (!jugador.isActivo()) {
             throw new RuntimeException("El jugador no esta activo :c");
@@ -52,11 +52,7 @@ public class PartidaService {
     }
 
     public BeanTiro realizarTiro(Long partidaId) {
-        BeanPartida partida = partidaRepository.findById(partidaId).orElseThrow(() -> new RuntimeException("Partida no encontrada con id: " + partidaId));
-
-        if (partida.getEstado() == EstadoPartida.FINALIZADA) {
-            throw new RuntimeException("No se pueden realizar tiros en una partida finalizada");
-        }
+        BeanPartida partida = partidaRepository.findById(partidaId).get();
 
         int dado1 = lanzarDado();
         int dado2 = lanzarDado();
@@ -93,7 +89,4 @@ public class PartidaService {
         return partidaRepository.save(partida);
     }
 
-    private int lanzarDado() {
-        return random.nextInt(6) + 1;
-    }
 }
